@@ -1,12 +1,14 @@
 import datetime
+
+from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from .serializer import OriginalImageSerializer
-from .models import OriginalImage, User, CompressedImage, TemporaryUrl
+from .models import OriginalImage, User, TemporaryUrl
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from .comress import create_thumbnail, check_tier_permissions
+from .comress import check_tier_permissions
 
 
 class ImageViewSet(ListAPIView):
@@ -27,8 +29,15 @@ class ImageViewSet(ListAPIView):
             return Response(context, status=status.HTTP_201_CREATED)
 
 
+@login_required()
 @api_view(['GET'])
 def get_temporary_url(request, url, time):
-    expires = datetime.datetime.now() + datetime.timedelta(seconds=time)
-    TemporaryUrl.objects.create(main_url=url, expires=expires)
-    return Response({"url": url, "time": time}, status=status.HTTP_200_OK)
+    author = User.objects.get(user=request.user)
+    if not author.tier.can_create_tmp_url:
+        return Response({"error": "you dont have permissions to create temporary link!"},
+                        status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+    if 300 <= time <= 30000:
+        expires = datetime.datetime.now() + datetime.timedelta(seconds=time)
+        TemporaryUrl.objects.create(main_url=url, expires=expires)
+        return Response({"url": url, "time": time}, status=status.HTTP_200_OK)
+    return Response({"error": "time needs to be between 300 and 30000 seconds!"}, status=status.HTTP_400_BAD_REQUEST)

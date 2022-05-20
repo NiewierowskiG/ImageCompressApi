@@ -30,6 +30,7 @@ class Tier(models.Model):
     can_link_custom_height = models.BooleanField()
     custom_height_px = models.PositiveIntegerField(null=True)
     can_link_original_image = models.BooleanField()
+    can_create_tmp_url = models.BooleanField()
 
     def __str__(self):
         return self.name
