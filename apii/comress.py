@@ -15,13 +15,13 @@ def check_tier_permissions(original_img, author, url):
         tmp_context['original'] = f"{url}{original_img.img.url}"
     if author.tier.can_link_custom_height and author.tier.custom_height_px > 0:
         tmp_context['custom'] = create_thumbnail(author.tier.custom_height_px,
-                                             original_img, url)
+                                                 original_img, url)
     return tmp_context
 
 
 def create_thumbnail(height, original_img, url):
     img_tmp = Image.open(original_img.img.file.name)
-    width = int(height/img_tmp.height * img_tmp.width)
+    width = int(height / img_tmp.height * img_tmp.width)
     img_tmp.thumbnail((width, height), Image.ANTIALIAS)
     output = BytesIO()
     img_tmp.save(output, format="PNG", quality=75)
@@ -30,10 +30,3 @@ def create_thumbnail(height, original_img, url):
                                      sys.getsizeof(output), None)
     tmp = CompressedImage.objects.create(img=thumbnail, original=original_img, px=height)
     return f"{url}{tmp.img.url}"
-
-"""
-def compress_image(original_img, px, url)
-    thumbnail200px = create_thumbnail(px, original_img.img.file.name, original_img.img.name)
-    tmp = CompressedImage.objects.create(img=thumbnail200px, original=original_img, px=px)
-    return f"{url}{tmp.img.url}"
-    """
