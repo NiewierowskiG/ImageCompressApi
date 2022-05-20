@@ -49,4 +49,10 @@ class ImageViewSet(ListAPIView):
                 context['400px'] = f"{request.get_host()}{tmp.img.url}"
             if author.tier.can_link_original_image:
                 context['original'] = f"{request.get_host()}{original_img.img.url}"
+            if author.tier.can_link_custom_height and author.tier.custom_height_px > 0:
+                thumbnail_custom = create_thumbnail(author.tier.custom_height_px, original_img.img.file.name,
+                                                  original_img.img.name)
+                tmp = CompressedImage.objects.create(img=thumbnail_custom, original=original_img,
+                                                     px=author.tier.custom_height_px)
+                context['custom'] = f"{request.get_host()}{tmp.img.url}"
             return Response(context, status=status.HTTP_201_CREATED)

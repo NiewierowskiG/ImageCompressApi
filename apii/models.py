@@ -19,6 +19,7 @@ class Tier(models.Model):
     can_link_200px_height = models.BooleanField()
     can_link_400px_height = models.BooleanField()
     can_link_custom_height = models.BooleanField()
+    custom_height_px = models.PositiveIntegerField(null=True)
     can_link_original_image = models.BooleanField()
 
     def __str__(self):
