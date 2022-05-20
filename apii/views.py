@@ -39,6 +39,14 @@ class ImageViewSet(ListAPIView):
             context = {}
             author = User.objects.get(user=request.user)
             original_img = OriginalImage.objects.create(img=request.data['img'], author=author)
-            thumbnail200px = create_thumbnail(200, original_img.img.file.name, original_img.img.name)
-            CompressedImage.objects.create(img=thumbnail200px, original=original_img, px=200)
+            if author.tier.can_link_200px_height:
+                thumbnail200px = create_thumbnail(200, original_img.img.file.name, original_img.img.name)
+                tmp = CompressedImage.objects.create(img=thumbnail200px, original=original_img, px=200)
+                context['200px'] = f"{request.get_host()}{tmp.img.url}"
+            if author.tier.can_link_200px_height:
+                thumbnail400px = create_thumbnail(400, original_img.img.file.name, original_img.img.name)
+                tmp = CompressedImage.objects.create(img=thumbnail400px, original=original_img, px=400)
+                context['400px'] = f"{request.get_host()}{tmp.img.url}"
+            if author.tier.can_link_original_image:
+                context['original'] = f"{request.get_host()}{original_img.img.url}"
             return Response(context, status=status.HTTP_201_CREATED)
