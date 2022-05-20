@@ -1,12 +1,14 @@
+import datetime
 import sys
 from io import BytesIO
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
+from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from .serializer import OriginalImageSerializer
-from .models import OriginalImage, User, CompressedImage
+from .models import OriginalImage, User, CompressedImage, TemporaryUrl
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -56,3 +58,10 @@ class ImageViewSet(ListAPIView):
                                                      px=author.tier.custom_height_px)
                 context['custom'] = f"{request.get_host()}{tmp.img.url}"
             return Response(context, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+def get_temporary_url(request, url, time):
+    expires = datetime.datetime.now() + datetime.timedelta(seconds=time)
+    eo = TemporaryUrl.objects.create(main_url=url, expires=expires)
+    return Response({"url": url, "time": time}, status=status.HTTP_200_OK)
