@@ -1,4 +1,6 @@
 import datetime
+from django.shortcuts import redirect
+from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from .serializer import OriginalImageSerializer, TemporaryUlrSerializer
 from .models import OriginalImage, User, TemporaryUrl
@@ -6,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .comress import check_tier_permissions
+from django.http import HttpResponseNotFound
 
 
 class ImageViewSet(ListAPIView):
@@ -48,17 +51,10 @@ class TemporaryUrlViewSet(ListAPIView):
                             status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
 
-"""
-@login_required()
 @api_view(['GET'])
-def get_temporary_url(request, url, time):
-    author = User.objects.get(user=request.user)
-    if not author.tier.can_create_tmp_url:
-        return Response({"error": "you dont have permissions to create temporary link!"},
-                        status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
-    if 300 <= time <= 30000:
-        expires = datetime.datetime.now() + datetime.timedelta(seconds=time)
-        TemporaryUrl.objects.create(main_url=url, expires=expires)
-        return Response({"url": url, "time": time}, status=status.HTTP_200_OK)
-    return Response({"error": "time needs to be between 300 and 30000 seconds!"}, status=status.HTTP_400_BAD_REQUEST)
-    """
+def redirect_temporary_url(request, url):
+    try:
+        tmp = TemporaryUrl.objects.get(tmp_url=url)
+        return redirect(tmp.main_url)
+    except TemporaryUrl.DoesNotExist:
+        return Response({"error": "That link doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
