@@ -42,6 +42,13 @@ INSTALLED_APPS = [
     'apii',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
+
 Q_CLUSTER = {
     "name": "djangoProject2",
     "orm": "default",  # Use Django's ORM + database for broker
