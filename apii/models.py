@@ -65,4 +65,3 @@ class TemporaryUrl(models.Model):
     main_url = models.CharField(max_length=250)
     tmp_url = models.CharField(max_length=100, default=generate_url)
     expires = models.DateTimeField()
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)

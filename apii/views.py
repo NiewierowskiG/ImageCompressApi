@@ -38,7 +38,7 @@ class TemporaryUrlViewSet(ListAPIView):
             author = Author.objects.get(user=request.user)
             if author.tier.can_create_tmp_url:
                 expires = datetime.datetime.now() + datetime.timedelta(seconds=int(request.data['time']))
-                tmp = TemporaryUrl.objects.create(main_url=request.data['main_url'], expires=expires, author=author)
+                tmp = TemporaryUrl.objects.create(main_url=request.data['main_url'], expires=expires)
                 tmp_url = f"{request.build_absolute_uri()}/{tmp.tmp_url}"
                 return Response({"tmp_url": tmp_url, "main_url": tmp.main_url, "expires": tmp.expires},
                                 status=status.HTTP_200_OK)
