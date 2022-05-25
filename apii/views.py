@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from .serializer import OriginalImageSerializer, TemporaryUlrSerializer
-from .models import OriginalImage, User, TemporaryUrl
+from .models import OriginalImage, Author, TemporaryUrl
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -15,13 +15,13 @@ class ImageViewSet(ListAPIView):
     serializer_class = OriginalImageSerializer
 
     def get_queryset(self):
-        author = User.objects.get(user=self.request.user)
+        author = Author.objects.get(user=self.request.user)
         return OriginalImage.objects.filter(author=author)
 
     def post(self, request):
         serializer = OriginalImageSerializer(data=request.data)
         if serializer.is_valid():
-            author = User.objects.get(user=request.user)
+            author = Author.objects.get(user=request.user)
             original_img = OriginalImage.objects.create(img=request.data['img'], author=author)
             context = check_tier_permissions(original_img, author, request.get_host())
             return Response(context, status=status.HTTP_201_CREATED)
@@ -35,7 +35,7 @@ class TemporaryUrlViewSet(ListAPIView):
     def post(self, request):
         serializer = TemporaryUlrSerializer(data=request.data)
         if serializer.is_valid():
-            author = User.objects.get(user=request.user)
+            author = Author.objects.get(user=request.user)
             if author.tier.can_create_tmp_url:
                 expires = datetime.datetime.now() + datetime.timedelta(seconds=int(request.data['time']))
                 tmp = TemporaryUrl.objects.create(main_url=request.data['main_url'], expires=expires, author=author)

@@ -28,7 +28,7 @@ class Tier(models.Model):
     can_link_200px_height = models.BooleanField()
     can_link_400px_height = models.BooleanField()
     can_link_custom_height = models.BooleanField()
-    custom_height_px = models.PositiveIntegerField(null=True)
+    custom_height_px = models.PositiveIntegerField(null=True, blank=True)
     can_link_original_image = models.BooleanField()
     can_create_tmp_url = models.BooleanField()
 
@@ -36,7 +36,7 @@ class Tier(models.Model):
         return self.name
 
 
-class User(models.Model):
+class Author(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     tier = models.ForeignKey(Tier, on_delete=models.CASCADE)
 
@@ -46,7 +46,7 @@ class User(models.Model):
 
 class OriginalImage(models.Model):
     img = models.ImageField(blank=True, upload_to=file_location_original)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.img.name
@@ -65,4 +65,4 @@ class TemporaryUrl(models.Model):
     main_url = models.CharField(max_length=250)
     tmp_url = models.CharField(max_length=100, default=generate_url)
     expires = models.DateTimeField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
