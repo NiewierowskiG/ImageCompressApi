@@ -28,4 +28,4 @@ services:
     build: .
     volumes:
       - .:/Django_gn
-    command: python create_database.py
+    command: python manage.py create_database
