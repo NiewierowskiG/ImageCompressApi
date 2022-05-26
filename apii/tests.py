@@ -6,9 +6,9 @@ from PIL import Image
 from django.test import TestCase
 from django.contrib.auth.models import User
 from djangoProject2 import settings
-from .models import Tier, Author, OriginalImage
-from .comress import check_tier_permissions
-from .management.commands.create_database import create_tiers
+from apii.models import Tier, Author, OriginalImage
+from apii.comress import check_tier_permissions
+from apii.management.commands.create_database import create_tiers
 from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 
 tier_list = (
