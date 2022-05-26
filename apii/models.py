@@ -25,12 +25,12 @@ def file_location_compressed(instance, filename):
 
 class Tier(models.Model):
     name = models.CharField(max_length=50)
-    can_link_200px_height = models.BooleanField()
-    can_link_400px_height = models.BooleanField()
-    can_link_custom_height = models.BooleanField()
+    can_link_200px_height = models.BooleanField(default=False)
+    can_link_400px_height = models.BooleanField(default=False)
+    can_link_custom_height = models.BooleanField(default=False)
     custom_height_px = models.PositiveIntegerField(null=True, blank=True)
-    can_link_original_image = models.BooleanField()
-    can_create_tmp_url = models.BooleanField()
+    can_link_original_image = models.BooleanField(default=False)
+    can_create_tmp_url = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

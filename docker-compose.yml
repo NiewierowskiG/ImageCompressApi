@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    volumes:
+      - .:/Django_gn
+    ports:
+      - "8000:8000"
+    image: web:django_gn
+    container_name: django_container_gn
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - djangoq
+      - migrate
+      - createdatabase
+  djangoq:
+    build: .
+    command: python manage.py qcluster
+    volumes:
+      - .:/Django_gn
+  migrate:
+    build: .
+    volumes:
+      - .:/Django_gn
+    command: python manage.py migrate
+  createdatabase:
+    build: .
+    volumes:
+      - .:/Django_gn
+    command: python create_database.py
