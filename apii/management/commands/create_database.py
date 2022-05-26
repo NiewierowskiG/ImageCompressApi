@@ -1,11 +1,13 @@
 from django.contrib.auth.models import User
 from django_q.models import Schedule
 from apii.models import Tier
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
+import time
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        time.sleep(5)
         if not Tier.objects.all():
             admin = User.objects.create(username="admin", is_superuser=True, is_staff=True, is_active=True)
             admin.set_password("admin123")
