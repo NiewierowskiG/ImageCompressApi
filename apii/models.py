@@ -20,7 +20,7 @@ def file_location_original(instance, filename):
 def file_location_compressed(instance, filename):
     time_now = datetime.now()
     return '/'.join(['images', instance.original.author.user.username, time_now.strftime("%d-%m-%Y"),
-                     str(instance.px)+"px"+filename])
+                     str(instance.px) + "px" + filename])
 
 
 class Tier(models.Model):

@@ -11,7 +11,6 @@ from .comress import check_tier_permissions
 from .management.commands.create_database import create_tiers
 from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
 
-
 tier_list = (
     "Basic",
     "Premium",
@@ -39,7 +38,6 @@ def check_images_context(context, tier):
     return True
 
 
-
 def create_original_img(img, user, tier_name):
     tier = Tier.objects.get(name=tier_name)
     author = Author.objects.create(tier=tier, user=user)
@@ -50,13 +48,12 @@ def create_original_img(img, user, tier_name):
 class TierTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user("test", "test@test.pl", "TestTest123")
-        self.image = SimpleUploadedFile(name='test.jpg', content=open("media/images/test/test.jpg", 'rb').read(), content_type='image/jpeg')
+        self.image = SimpleUploadedFile(name='test.jpg', content=open("media/images/test/test.jpg", 'rb').read(),
+                                        content_type='image/jpeg')
         create_tiers()
-
 
     def test_basic_tiers(self):
         for tier_name in tier_list:
             tier, author, original_img = create_original_img(self.image, self.user, tier_name)
             context = check_tier_permissions(original_img, author, "")
             self.assertTrue(check_images_context(context, tier))
-

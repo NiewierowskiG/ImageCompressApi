@@ -21,5 +21,5 @@ class Command(BaseCommand):
             admin.set_password("admin123")
             admin.save()
             Schedule.objects.create(name="Delete TemporaryUrls", func="apii.tasks.delete_expired_temporary_urls",
-                                schedule_type="H")
+                                    schedule_type="H")
             create_tiers()
