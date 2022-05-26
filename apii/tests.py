@@ -1,3 +1,4 @@
+import os
 from io import StringIO
 import base64
 from io import BytesIO
@@ -45,6 +46,12 @@ def create_original_img(img, user, tier_name):
     return tier, author, original_img
 
 
+def clear_test_dir():
+    for file in os.listdir("media/images/test"):
+        if file != "test.jpg":
+            os.remove(f"media/images/test/{file}")
+
+
 class TierTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user("test", "test@test.pl", "TestTest123")
@@ -57,3 +64,4 @@ class TierTestCase(TestCase):
             tier, author, original_img = create_original_img(self.image, self.user, tier_name)
             context = check_tier_permissions(original_img, author, "")
             self.assertTrue(check_images_context(context, tier))
+        clear_test_dir()
