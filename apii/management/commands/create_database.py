@@ -13,7 +13,7 @@ class Command(BaseCommand):
             admin.set_password("admin123")
             admin.save()
             Schedule.objects.create(name="Delete TemporaryUrls", func="apii.tasks.delete_expired_temporary_urls",
-                                schedule_type="Hourly")
+                                schedule_type="H")
             Tier.objects.create(name="Basic", can_link_200px_height=True)
             Tier.objects.create(name="Premium", can_link_200px_height=True, can_link_400px_height=True,
                             can_link_original_image=True)
