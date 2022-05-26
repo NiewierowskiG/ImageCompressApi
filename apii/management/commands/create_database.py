@@ -5,6 +5,14 @@ from django.core.management.base import BaseCommand
 import time
 
 
+def create_tiers():
+    Tier.objects.create(name="Basic", can_link_200px_height=True)
+    Tier.objects.create(name="Premium", can_link_200px_height=True, can_link_400px_height=True,
+                        can_link_original_image=True)
+    Tier.objects.create(name="Enterprise", can_link_200px_height=True, can_link_400px_height=True,
+                        can_link_original_image=True, can_create_tmp_url=True)
+
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         time.sleep(5)
@@ -14,8 +22,4 @@ class Command(BaseCommand):
             admin.save()
             Schedule.objects.create(name="Delete TemporaryUrls", func="apii.tasks.delete_expired_temporary_urls",
                                 schedule_type="H")
-            Tier.objects.create(name="Basic", can_link_200px_height=True)
-            Tier.objects.create(name="Premium", can_link_200px_height=True, can_link_400px_height=True,
-                            can_link_original_image=True)
-            Tier.objects.create(name="Enterprise", can_link_200px_height=True, can_link_400px_height=True,
-                            can_link_original_image=True, can_create_tmp_url=True)
+            create_tiers()
