@@ -1,1 +1,1 @@
-Type a command  docker-compose up web
+Type a command  "docker-compose up web"
