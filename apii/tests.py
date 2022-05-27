@@ -1,16 +1,12 @@
 import os
-from io import StringIO
-import base64
-from io import BytesIO
-
+import shutil
 from PIL import Image
 from django.test import TestCase
 from django.contrib.auth.models import User
-from djangoProject2 import settings
 from apii.models import Tier, Author, OriginalImage
 from apii.comress import check_tier_permissions
 from apii.management.commands.create_database import create_tiers
-from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 tier_list = (
     "Basic",
@@ -49,7 +45,7 @@ def create_original_img(img, user, tier_name):
 def clear_test_dir():
     for file in os.listdir("media/images/test"):
         if file != "test.jpg":
-            os.remove(f"media/images/test/{file}")
+            shutil.rmtree(f"media/images/test/{file}")
 
 
 class TierTestCase(TestCase):
